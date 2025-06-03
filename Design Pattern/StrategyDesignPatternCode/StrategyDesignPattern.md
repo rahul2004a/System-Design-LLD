@@ -1,20 +1,28 @@
 # Strategy Design Pattern
 
-## Overview
+## <span style="color:blue;">Overview</span>
 
-The Strategy Design Pattern is a behavioral design pattern that enables selecting an algorithm's behavior at runtime. It defines a family of algorithms, encapsulates each one, and makes them interchangeable. This pattern is particularly useful when you want to define multiple behaviors and switch between them dynamically without altering the context class.
+The <span style="color:green;">Strategy Design Pattern</span> is a behavioral design pattern that enables selecting an algorithm's behavior at runtime. It defines a family of algorithms, encapsulates each one, and makes them interchangeable. This pattern is particularly useful when you want to define multiple behaviors and switch between them dynamically without altering the context class.
 
-## Key Components
+---
 
-1. **Strategy Interface**: Defines a common interface for all supported algorithms.
-2. **Concrete Strategies**: Implement the strategy interface with specific behaviors.
-3. **Context Class**: Maintains a reference to a strategy object and delegates the execution of the behavior to the strategy.
+## <span style="color:blue;">Key Components</span>
 
-### Example Problem
+1. <span style="color:purple;">Strategy Interface</span>: Defines a common interface for all supported algorithms.
+2. <span style="color:purple;">Concrete Strategies</span>: Implement the strategy interface with specific behaviors.
+3. <span style="color:purple;">Context Class</span>: Maintains a reference to a strategy object and delegates the execution of the behavior to the strategy.
+
+---
+
+## <span style="color:blue;">Problem Solved</span>
+
+The Strategy Design Pattern solves the problem of having multiple conditional statements or hardcoded logic for selecting and executing different behaviors. By encapsulating algorithms into separate classes, it promotes code reusability, flexibility, and maintainability. It is particularly useful in scenarios where the behavior of a class needs to be changed dynamically at runtime.
+
+### <span style="color:blue;">Example Problem</span>
 
 Imagine a vehicle simulation system where different types of vehicles have different driving capabilities. Instead of hardcoding the driving logic for each vehicle type, the Strategy Design Pattern allows encapsulating the driving logic into separate strategy classes. This makes it easy to add new driving capabilities or modify existing ones without altering the vehicle classes.
 
-### Problem Diagram
+### <span style="color:blue;">Problem Diagram</span>
 
 Below is a diagram illustrating the problem before applying the Strategy Design Pattern:
 
@@ -35,13 +43,11 @@ Below is a diagram illustrating the problem before applying the Strategy Design 
 +------------------+       +------------------+       +------------------+
 ```
 
-In this diagram, the `Vehicle` class has multiple child classes (`SportyVehicle`, `PassengerVehicle`, and `OffroadVehicle`) that override or reuse the same functions. This leads to code duplication and makes it difficult to add new behaviors without modifying the existing classes.
+---
 
-## Example Code
+## <span style="color:blue;">Example Code</span>
 
-Below is an example implementation of the Strategy Design Pattern:
-
-### Strategy Interface
+### <span style="color:green;">Strategy Interface</span>
 
 ```java
 interface DriveStrategy {
@@ -49,7 +55,7 @@ interface DriveStrategy {
 }
 ```
 
-### Concrete Strategies
+### <span style="color:green;">Concrete Strategies</span>
 
 ```java
 class NormalDriveStrategy implements DriveStrategy {
@@ -67,7 +73,7 @@ class SpecialDriveStrategy implements DriveStrategy {
 }
 ```
 
-### Context Class
+### <span style="color:green;">Context Class</span>
 
 ```java
 class Vehicle {
@@ -84,7 +90,7 @@ class Vehicle {
 }
 ```
 
-### Concrete Vehicles
+### <span style="color:green;">Concrete Vehicles</span>
 
 ```java
 class PassengerVehicle extends Vehicle {
@@ -106,7 +112,7 @@ class SportyVehicle extends Vehicle {
 }
 ```
 
-### Demo
+### <span style="color:green;">Demo</span>
 
 ```java
 public class StrategyPatternDemo {
@@ -122,7 +128,9 @@ public class StrategyPatternDemo {
 }
 ```
 
-## Diagram
+---
+
+## <span style="color:blue;">Diagram</span>
 
 Below is a diagram illustrating the Strategy Design Pattern:
 
@@ -146,17 +154,23 @@ Below is a diagram illustrating the Strategy Design Pattern:
 +------------------+
 ```
 
-## Advantages
+---
 
-- **Flexibility**: Allows switching between different algorithms dynamically.
-- **Encapsulation**: Encapsulates the algorithm's implementation, making it easier to modify or extend.
-- **Open/Closed Principle**: New strategies can be added without modifying the existing code.
+## <span style="color:blue;">Advantages</span>
 
-## Use Cases
+- <span style="color:green;">Flexibility</span>: Allows switching between different algorithms dynamically.
+- <span style="color:green;">Encapsulation</span>: Encapsulates the algorithm's implementation, making it easier to modify or extend.
+- <span style="color:green;">Open/Closed Principle</span>: New strategies can be added without modifying the existing code.
+
+---
+
+## <span style="color:blue;">Use Cases</span>
 
 - When you have multiple algorithms for a specific task and want to choose the appropriate one at runtime.
 - When you want to avoid conditional statements for selecting behaviors.
 
-## Conclusion
+---
+
+## <span style="color:blue;">Conclusion</span>
 
 The Strategy Design Pattern is a powerful tool for designing flexible and maintainable systems. By encapsulating algorithms and making them interchangeable, it promotes code reusability and simplifies the addition of new behaviors.
