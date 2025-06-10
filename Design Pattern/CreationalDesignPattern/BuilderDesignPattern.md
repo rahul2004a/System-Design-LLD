@@ -493,25 +493,72 @@ public class GenericBuilder<T> {
 
 ## Modern Java Features
 
-### Using Records (Java 14+)
+### Understanding Records (Java 14+)
+
+**What are Records?**
+Records are a special kind of class introduced in Java 14 that are designed to be simple data carriers. They automatically generate:
+
+- Constructor
+- Getters (accessor methods)
+- `equals()` and `hashCode()` methods
+- `toString()` method
+
+**Traditional Class vs Record:**
+
+```java
+// Traditional Class (lots of boilerplate code)
+public class Computer {
+    private final String cpu;
+    private final String ram;
+    private final String storage;
+
+    public Computer(String cpu, String ram, String storage) {
+        this.cpu = cpu;
+        this.ram = ram;
+        this.storage = storage;
+    }
+
+    public String getCpu() { return cpu; }
+    public String getRam() { return ram; }
+    public String getStorage() { return storage; }
+
+    @Override
+    public boolean equals(Object obj) { /* lots of code */ }
+
+    @Override
+    public int hashCode() { /* code */ }
+
+    @Override
+    public String toString() { /* code */ }
+}
+
+// Record (much simpler - Java generates everything automatically!)
+public record Computer(String cpu, String ram, String storage) {
+    // That's it! Java automatically creates constructor, getters, equals, hashCode, toString
+}
+```
+
+**Using Records with Builder Pattern:**
 
 ```java
 public record Computer(
-    String cpu,
-    String ram,
-    String storage,
-    String gpu,
-    boolean bluetooth,
-    boolean wifi
+    String cpu,          // Required field
+    String ram,          // Required field
+    String storage,      // Required field
+    String gpu,          // Optional field
+    boolean bluetooth,   // Optional field
+    boolean wifi         // Optional field
 ) {
+    // You can still add a Builder inside a Record
     public static class Builder {
         private String cpu;
         private String ram;
         private String storage;
-        private String gpu = "Integrated";
-        private boolean bluetooth = false;
-        private boolean wifi = false;
+        private String gpu = "Integrated";        // Default value
+        private boolean bluetooth = false;        // Default value
+        private boolean wifi = false;            // Default value
 
+        // Fluent methods that return Builder for chaining
         public Builder cpu(String cpu) {
             this.cpu = cpu;
             return this;
@@ -522,14 +569,152 @@ public record Computer(
             return this;
         }
 
-        // ... other methods
+        public Builder storage(String storage) {
+            this.storage = storage;
+            return this;
+        }
 
+        public Builder gpu(String gpu) {
+            this.gpu = gpu;
+            return this;
+        }
+
+        public Builder bluetooth(boolean bluetooth) {
+            this.bluetooth = bluetooth;
+            return this;
+        }
+
+        public Builder wifi(boolean wifi) {
+            this.wifi = wifi;
+            return this;
+        }
+
+        // Build method creates the Record
         public Computer build() {
+            if (cpu == null || ram == null || storage == null) {
+                throw new IllegalArgumentException("CPU, RAM, and Storage are required");
+            }
+            // Record constructor takes all parameters in order
             return new Computer(cpu, ram, storage, gpu, bluetooth, wifi);
         }
     }
 }
+
+// Usage Example:
+Computer computer = new Computer.Builder()
+    .cpu("Intel i7")
+    .ram("16GB")
+    .storage("512GB SSD")
+    .gpu("NVIDIA RTX 3060")
+    .wifi(true)
+    .build();
+
+// Record automatically provides these methods:
+System.out.println(computer.cpu());        // Getter method
+System.out.println(computer.ram());        // Getter method
+System.out.println(computer);              // toString() method
 ```
+
+### Other Modern Java Features for Builder Pattern
+
+#### 1. **Method References and Functional Interfaces (Java 8+)**
+
+```java
+// Using Function interface for validation
+public class Computer {
+    public static class Builder {
+        private List<Function<Computer, Boolean>> validators = new ArrayList<>();
+
+        public Builder addValidator(Function<Computer, Boolean> validator) {
+            validators.add(validator);
+            return this;
+        }
+
+        public Computer build() {
+            Computer computer = new Computer(this);
+            // Apply all validators
+            validators.forEach(validator -> {
+                if (!validator.apply(computer)) {
+                    throw new IllegalArgumentException("Validation failed");
+                }
+            });
+            return computer;
+        }
+    }
+}
+
+// Usage:
+Computer computer = new Computer.Builder()
+    .cpu("Intel i7")
+    .addValidator(c -> c.getCpu() != null && !c.getCpu().isEmpty())
+    .addValidator(c -> c.getRam() != null)
+    .build();
+```
+
+#### 2. **Optional for Nullable Fields (Java 8+)**
+
+```java
+public class Computer {
+    private final Optional<String> gpu;
+    private final Optional<String> soundCard;
+
+    public Optional<String> getGpu() { return gpu; }
+    public Optional<String> getSoundCard() { return soundCard; }
+
+    public static class Builder {
+        private String gpu;
+        private String soundCard;
+
+        public Computer build() {
+            return new Computer(
+                Optional.ofNullable(gpu),
+                Optional.ofNullable(soundCard)
+            );
+        }
+    }
+}
+
+// Usage:
+computer.getGpu().ifPresent(gpu -> System.out.println("GPU: " + gpu));
+```
+
+#### 3. **Builder with Generics and Type Safety**
+
+```java
+// Generic Builder that ensures type safety
+public class TypeSafeBuilder<T> {
+    private final Class<T> type;
+    private final Map<String, Object> properties = new HashMap<>();
+
+    public TypeSafeBuilder(Class<T> type) {
+        this.type = type;
+    }
+
+    public <V> TypeSafeBuilder<T> set(String property, V value) {
+        properties.put(property, value);
+        return this;
+    }
+
+    public T build() {
+        // Use reflection or other mechanisms to create object
+        // This ensures type safety at compile time
+        return createInstance();
+    }
+
+    private T createInstance() {
+        // Implementation details...
+        return null; // Simplified for explanation
+    }
+}
+```
+
+**Key Benefits of Modern Approach:**
+
+1. **Less Boilerplate**: Records eliminate getter/setter/equals/hashCode code
+2. **Immutability**: Records are naturally immutable
+3. **Type Safety**: Generics and Optional provide better type safety
+4. **Readability**: Modern syntax is more concise and readable
+5. **Null Safety**: Optional helps handle nullable values better
 
 ## Conclusion
 
